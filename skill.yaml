@@ -1,0 +1,29 @@
+lucid: "1.0"
+name: lucid-observability
+version: "4.0.0"
+description: "Production observability triage, incident response, cross-service correlation, billing health monitoring, and OTel convention enforcement"
+author: "Lucid Foundation"
+license: "MIT"
+
+requires:
+  mcps:
+    - sentry
+    - supabase
+  env:
+    - SENTRY_AUTH_TOKEN
+    - SENTRY_ORG
+
+skills:
+  - triage
+  - incident-response
+  - correlation
+  - billing-health
+  - conventions
+  - production-readiness
+  - alerting
+
+heartbeat: HEARTBEAT.md
+
+platforms:
+  claude-code: true
+  openclaw: true
