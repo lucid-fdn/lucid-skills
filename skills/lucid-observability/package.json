@@ -1,0 +1,32 @@
+{
+  "name": "lucid-observability",
+  "version": "4.0.0",
+  "description": "Production observability skills for AI agents — triage, incident response, correlation, billing health, conventions, alerting",
+  "type": "module",
+  "license": "MIT",
+  "author": "Lucid Foundation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daishizenSensei/lucid-observability-agent"
+  },
+  "keywords": [
+    "agentskills",
+    "skills",
+    "observability",
+    "sentry",
+    "opentelemetry",
+    "monitoring",
+    "incident-response",
+    "triage",
+    "lucid-foundation"
+  ],
+  "files": [
+    "skills",
+    "HEARTBEAT.md",
+    "skill.yaml",
+    ".claude-plugin",
+    "openclaw.plugin.json",
+    "README.md",
+    "LICENSE"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lucid-observability",
+  "name": "Lucid Observability",
+  "version": "4.0.0",
+  "description": "Production observability skills: triage, incident response, correlation, billing health, conventions, alerting",
+  "skills": [
+    "skills/triage",
+    "skills/incident-response",
+    "skills/correlation",
+    "skills/billing-health",
+    "skills/conventions",
+    "skills/production-readiness",
+    "skills/alerting"
+  ]
+}
