@@ -1,0 +1,10 @@
+name: SKILL_NAME
+version: 1.0.0
+description: SKILL_DESCRIPTION
+author: RaijinLabs
+license: MIT
+skills:
+  - name: SKILL_NAME
+    description: SKILL_DESCRIPTION
+    references:
+      - references/overview.md
