@@ -1,7 +1,7 @@
 lucid: "1.0"
 name: lucid-audit
-version: "1.0.0"
-description: "Smart contract security — vulnerability detection, gas optimization, access control review, reentrancy checks, security scoring"
+version: "2.0.0"
+description: "Smart contract security — AI brain layer with verdicts (SAFE/CAUTION/RISKY/CRITICAL), vulnerability detection, gas optimization, access control review, security scoring"
 author: "RaijinLabs"
 license: "MIT"
 

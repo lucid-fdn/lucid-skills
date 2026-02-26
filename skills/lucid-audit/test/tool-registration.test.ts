@@ -1,5 +1,6 @@
 // ---------------------------------------------------------------------------
-// tool-registration.test.ts -- Verify all 14 tools register correctly
+// tool-registration.test.ts -- Verify all 19 tools register correctly
+// (14 core + 5 brain)
 // ---------------------------------------------------------------------------
 
 import { describe, it, expect } from 'vitest';
@@ -15,9 +16,9 @@ const mockConfig: PluginConfig = {
 };
 
 describe('tool registration', () => {
-  it('creates exactly 14 tools', () => {
+  it('creates exactly 19 tools (14 core + 5 brain)', () => {
     const tools = createAllTools({ config: mockConfig });
-    expect(tools.length).toBe(14);
+    expect(tools.length).toBe(19);
   });
 
   it('all tools have unique names', () => {
@@ -27,10 +28,10 @@ describe('tool registration', () => {
     expect(unique.size).toBe(names.length);
   });
 
-  it('all tools have audit_ prefix', () => {
+  it('all tools have audit_ or lucid_ prefix', () => {
     const tools = createAllTools({ config: mockConfig });
     for (const tool of tools) {
-      expect(tool.name).toMatch(/^audit_/);
+      expect(tool.name).toMatch(/^(audit_|lucid_)/);
     }
   });
 
@@ -48,7 +49,7 @@ describe('tool registration', () => {
     }
   });
 
-  it('includes all expected tool names', () => {
+  it('includes all expected core tool names', () => {
     const tools = createAllTools({ config: mockConfig });
     const names = tools.map((t) => t.name);
     expect(names).toContain('audit_scan_contract');
@@ -65,5 +66,15 @@ describe('tool registration', () => {
     expect(names).toContain('audit_analyze_dependencies');
     expect(names).toContain('audit_generate_findings');
     expect(names).toContain('audit_status');
+  });
+
+  it('includes all expected brain tool names', () => {
+    const tools = createAllTools({ config: mockConfig });
+    const names = tools.map((t) => t.name);
+    expect(names).toContain('lucid_audit');
+    expect(names).toContain('lucid_audit_compare');
+    expect(names).toContain('lucid_audit_batch');
+    expect(names).toContain('lucid_gas');
+    expect(names).toContain('lucid_audit_pro');
   });
 });

@@ -18,6 +18,7 @@ import { createGetKnownVulnerabilitiesTool } from './get-known-vulnerabilities.j
 import { createAnalyzeDependenciesTool } from './analyze-dependencies.js';
 import { createGenerateFindingsTool } from './generate-findings.js';
 import { createStatusTool } from './status.js';
+import { createBrainTools } from '../../brain/index.js';
 
 export interface ToolDependencies {
   config: PluginConfig;
@@ -25,6 +26,7 @@ export interface ToolDependencies {
 
 export function createAllTools(deps: ToolDependencies): ToolDefinition[] {
   return [
+    // Core tools (14)
     createScanContractTool(deps),
     createGetSecurityScoreTool(deps),
     createCheckReentrancyTool(deps),
@@ -39,6 +41,8 @@ export function createAllTools(deps: ToolDependencies): ToolDefinition[] {
     createAnalyzeDependenciesTool(deps),
     createGenerateFindingsTool(deps),
     createStatusTool(deps),
+    // Brain tools (5)
+    ...createBrainTools({ config: deps.config }),
   ];
 }
 
