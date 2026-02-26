@@ -1,0 +1,5 @@
+{
+  "name": "lucid-audit",
+  "description": "Smart contract security — vulnerability detection, gas optimization, access control review, reentrancy checks, security scoring",
+  "version": "1.0.0"
+}

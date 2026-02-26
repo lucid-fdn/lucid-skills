@@ -1,0 +1,21 @@
+lucid: "1.0"
+name: lucid-seo
+version: "1.0.0"
+description: "SEO intelligence — keyword research, SERP analysis, content optimization, backlink monitoring"
+author: "RaijinLabs"
+license: "MIT"
+
+requires:
+  mcps:
+    - "@modelcontextprotocol/sdk"
+  env: []
+
+skills: []
+
+platforms:
+  claude-code: true
+  openclaw: true
+
+entry:
+  mcp: src/bin.ts
+  openclaw: src/openclaw.ts

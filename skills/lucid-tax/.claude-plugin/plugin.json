@@ -1,0 +1,5 @@
+{
+  "name": "lucid-tax",
+  "description": "Crypto tax compliance — cost-basis calculation, tax-loss harvesting, Form 8949 generation",
+  "version": "1.0.0"
+}

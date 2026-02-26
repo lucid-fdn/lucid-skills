@@ -1,0 +1,25 @@
+lucid: "1.0"
+name: lucid-tax
+version: "1.0.0"
+description: "Crypto tax compliance — cost-basis calculation, tax-loss harvesting, Form 8949 generation"
+author: "RaijinLabs"
+license: "MIT"
+
+requires:
+  mcps:
+    - "@modelcontextprotocol/sdk"
+  env:
+    - TAX_SUPABASE_URL
+    - TAX_SUPABASE_KEY
+    - TAX_ETHERSCAN_API_KEY
+    - TAX_COINGECKO_API_KEY
+
+skills: []
+
+platforms:
+  claude-code: true
+  openclaw: true
+
+entry:
+  mcp: src/bin.ts
+  openclaw: src/openclaw.ts
