@@ -1,13 +1,15 @@
 lucid: "1.0"
 name: lucid-predict
-version: "4.0.0"
-description: "Prediction market intelligence — odds analysis, Kelly criterion sizing, cross-platform arbitrage, and portfolio tracking"
-author: "Lucid Foundation"
+version: "5.0.0"
+description: "Edge Hunter — prediction market intelligence with 7 brain tools: EV analysis, Kelly sizing, cross-platform arbitrage, Bayesian calibration"
+author: "RaijinLabs"
 license: "MIT"
 
 requires:
-  mcps: []
-  env: []
+  mcps:
+    - "@modelcontextprotocol/sdk"
+  env:
+    - PREDICT_KALSHI_API_KEY  # optional — enables Kalshi adapter
 
 skills:
   - market-research
@@ -20,3 +22,7 @@ heartbeat: HEARTBEAT.md
 platforms:
   claude-code: true
   openclaw: true
+
+entry:
+  mcp: src/bin.ts
+  openclaw: src/openclaw.ts

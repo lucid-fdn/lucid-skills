@@ -117,6 +117,7 @@ export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
     execute: async (params: Record<string, unknown>) => {
       const query = (params.query as string) || '';
       const format = (params.format as string) || 'json';
+      const detail = (params.detail as string) || 'full';
       const exchangeIds = registry.list().map((a) => a.exchangeId);
       const parsed = parseQuery(query, exchangeIds);
 
@@ -155,6 +156,18 @@ export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
 
       if (format === 'text') {
         return formatThinkResult(result);
+      }
+
+      // Compact mode: strip evidence details and reduce rulesTriggered
+      if (detail === 'compact') {
+        const { evidence: _ev, ...rest } = result;
+        return JSON.stringify({
+          ...rest,
+          rulesTriggered: result.rulesTriggered.map((r) => ({
+            id: r.id,
+            contribution: r.contribution,
+          })),
+        });
       }
 
       return JSON.stringify(result);
@@ -301,7 +314,6 @@ export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
       const adapters = registry.list();
       let totalExposure = 0;
       let maxLeverage = 0;
-      let positionCount = 0;
 
       for (const adapter of adapters) {
         if (!adapter.getPositions) continue;
@@ -309,7 +321,6 @@ export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
         try {
           const positions = await adapter.getPositions();
           for (const pos of positions) {
-            positionCount++;
             const notional = Math.abs(pos.size * pos.markPrice);
             totalExposure += notional;
             if (pos.leverage > maxLeverage) maxLeverage = pos.leverage;

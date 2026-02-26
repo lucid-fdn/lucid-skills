@@ -60,3 +60,15 @@ export type { ToolDefinition, ToolParamDef } from './tools/index.js';
 // Config
 export { loadConfig } from './config.js';
 export type { PluginConfig } from './config.js';
+
+// Brain layer
+export { createBrainTools, runAnalysis } from './brain/index.js';
+export type {
+  ThinkResult, ThinkEvidence, ThinkHow, RuleTriggered, Provenance, CrossoverType,
+  ScanResult, ScanItem, ExecuteResult,
+  WatchResult, ProtectResult, ProtectCheck, ReviewResult,
+  Verdict, BrainContext, AnalysisParams, BrainDeps,
+} from './brain/index.js';
+
+// Domain adapter (for brain SDK integration)
+export { tradeDomain } from './domain.js';

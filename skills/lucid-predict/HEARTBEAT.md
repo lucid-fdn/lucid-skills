@@ -1,66 +1,65 @@
 # Heartbeat Checks
 
-Periodic monitoring tasks to keep the prediction market portfolio healthy and up to date.
+Periodic monitoring tasks using the brain tools to keep prediction market activity healthy.
 
 ---
 
-## 1. Position Monitoring
+## 1. Edge Scan
 
-**Purpose:** Check PnL on all open positions and alert if significant losses occur.
+**Tool:** `lucid_discover`
+
+**Purpose:** Find new edge opportunities across all platforms.
 
 **Procedure:**
-1. For each open position, fetch the current market price from the respective platform.
-2. Calculate unrealized PnL: `unrealized_pnl = (shares x current_price) - cost_basis`
-3. Calculate ROI: `roi_pct = ((current_value - cost_basis) / cost_basis) x 100`
-4. **Alert** if any position has `roi_pct < -20%` (significant loss threshold).
-5. **Alert** if total portfolio `total_pnl_pct < -10%`.
-6. Report a summary of all position changes since the last check.
+1. Call `lucid_discover` with broad query (e.g., "trending", category name, or specific topic).
+2. Review returned opportunities sorted by composite score.
+3. For top candidates, call `lucid_evaluate` with your probability estimate.
+4. Check for near-certain expiry opportunities (high-probability bonding).
+5. Report new opportunities with verdict, edge%, and recommended position size.
 
 ---
 
-## 2. Market Resolution
+## 2. Arbitrage Scan
 
-**Purpose:** Check if any tracked markets have resolved and update position statuses.
+**Tool:** `lucid_arbitrage`
+
+**Purpose:** Find cross-platform mispricings for guaranteed profit.
 
 **Procedure:**
-1. For each open position, query the market status from the platform API.
-2. If `status == "resolved"`:
-   - Determine the winning outcome.
-   - Calculate realized PnL for the position.
-   - Mark the position as "closed".
-   - Report: market title, winning outcome, PnL, ROI%.
-3. Log any markets that have moved to "closed" (trading stopped, pending resolution).
-4. Log any markets that are "disputed" (resolution contested).
+1. Call `lucid_arbitrage` (no query = scan trending markets across all platforms).
+2. Review opportunities with `profitPct >= 3%`.
+3. Verify matches manually — title matching can produce false positives.
+4. Check liquidity on both sides before executing.
+5. Report top opportunities with combined cost, profit, and profit%.
 
 ---
 
-## 3. Arbitrage Scan
+## 3. Calibration Review
 
-**Purpose:** Run cross-platform arbitrage detection to find new mispricing opportunities.
+**Tool:** `lucid_calibrate`
+
+**Purpose:** Track forecasting accuracy and detect overconfidence/underconfidence.
 
 **Procedure:**
-1. Fetch current open markets from all configured platforms.
-2. Match markets across platforms using the title matching algorithm (exact match after cleaning, or >=60% word overlap).
-3. For matched pairs, calculate the spread: `spread = ((priceB - priceA) / priceA) x 100`
-4. Filter for spreads >= 3% (minimum profitable spread).
-5. Report the top opportunities sorted by spread descending.
-6. Flag any opportunities involving markets the user already has positions in (potential hedge or conflict).
+1. Collect resolved forecasts: `[{predictedProbability, actualOutcome (0/1)}]`.
+2. Call `lucid_calibrate` with the forecasts array.
+3. Review Brier score (< 0.2 = good), overconfidence score, and calibration buckets.
+4. **Alert** if Brier score > 0.3 (poor calibration).
+5. **Alert** if overconfidence > 0.1 (systematically overconfident).
+6. Adjust future probability estimates based on calibration findings.
 
 ---
 
 ## 4. Portfolio Health
 
-**Purpose:** Assess overall portfolio health including exposure concentration and risk metrics.
+**Tool:** `lucid_size`
+
+**Purpose:** Assess portfolio allocation and rebalancing needs.
 
 **Procedure:**
-1. Calculate total exposure: `total_exposure = sum(current_value)` across all open positions.
-2. Calculate concentration risk:
-   - `largest_position_pct = max(current_value) / total_exposure x 100`
-   - **Alert** if `largest_position_pct > 30%` (over-concentrated).
-3. Calculate platform exposure:
-   - For each platform, `platform_pct = sum(current_value on platform) / total_exposure x 100`
-   - **Alert** if any single platform > 70% of total exposure.
-4. Calculate category exposure:
-   - For each category, `category_pct = sum(current_value in category) / total_exposure x 100`
-   - **Alert** if any single category > 50% of total exposure.
-5. Report win rate, average position size, and overall PnL.
+1. Gather current positions with updated prices and probability estimates.
+2. Call `lucid_size` with the positions array and current bankroll.
+3. Compare recommended sizes vs actual positions.
+4. **Alert** if any position exceeds 30% of total exposure (concentration risk).
+5. **Alert** if total allocation > 80% of bankroll (overexposed).
+6. Report recommended rebalancing actions.

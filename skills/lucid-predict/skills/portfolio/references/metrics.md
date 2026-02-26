@@ -1,20 +1,20 @@
 # Portfolio Metrics Reference
 
-A consolidated reference of all portfolio formulas and metrics.
+Consolidated reference of all portfolio formulas and metrics. Position sizing is implemented in `src/brain/tools.ts` (`lucid_size`), calibration in `src/math/brier.ts` (`lucid_calibrate`).
 
 ---
 
-## Position Tracking
+## Kelly Position Sizing
 
 ```
-cost_basis = shares x avg_price
+b  = (1 / price) - 1
+f* = max(0, (b x p - q) / b)
+halfKelly = f* / 2
+recommended = min(halfKelly, maxFraction)
+positionSize = bankroll x recommended
 ```
 
-Adding to a position:
-```
-new_avg_price  = (old_cost_basis + new_shares x new_price) / (old_shares + new_shares)
-new_cost_basis = (old_shares + new_shares) x new_avg_price
-```
+Default `maxFraction` = 0.25 (25% cap per position).
 
 ---
 
@@ -52,25 +52,28 @@ total_pnl_pct       = (total_pnl / total_invested) x 100
 
 ---
 
-## Position Counts and Win Rate
+## Calibration Metrics
+
+### Brier Score
 
 ```
-open_count   = count(status = "open")
-closed_count = count(status = "closed")
-won_count    = count(closed AND outcome correct)
-lost_count   = count(closed AND outcome incorrect)
-win_rate     = (won_count / (won_count + lost_count)) x 100
+brierScore = (1/N) x sum((predicted - actual)^2)
 ```
 
----
+| Score | Rating |
+|-------|--------|
+| < 0.1 | Excellent |
+| < 0.2 | Good |
+| < 0.3 | Fair |
+| >= 0.3 | Poor |
 
-## Trade Statistics
+### Overconfidence
 
 ```
-best_trade_pnl    = max(pnl) across closed positions
-worst_trade_pnl   = min(pnl) across closed positions
-avg_position_size = total_invested / (open_count + closed_count)
+overconfidence = weighted_avg(predicted - actual) across calibration buckets
 ```
+
+Positive = overconfident, Negative = underconfident.
 
 ---
 
@@ -83,6 +86,8 @@ platform_exposure = sum(current_value) per platform
 platform_pct      = (platform_exposure / total_exposure) x 100
 ```
 
+Alert: any platform > 70%.
+
 ### By Category
 
 ```
@@ -90,22 +95,16 @@ category_exposure = sum(current_value) per category
 category_pct      = (category_exposure / total_exposure) x 100
 ```
 
-### By Outcome
-
-```
-yes_exposure = sum(current_value) where outcome = "Yes"
-no_exposure  = sum(current_value) where outcome = "No"
-```
+Alert: any category > 50%.
 
 ### Concentration
 
 ```
 total_exposure       = sum(current_value) for all open positions
-largest_position     = max(current_value) across open positions
-largest_position_pct = (largest_position / total_exposure) x 100
+largest_position_pct = max(current_value) / total_exposure x 100
 ```
 
-High concentration warning: `largest_position_pct > 30%`
+Alert: largest position > 30%.
 
 ---
 
@@ -113,6 +112,8 @@ High concentration warning: `largest_position_pct > 30%`
 
 | Alert | Condition |
 |-------|-----------|
-| `odds_above` | `current_price > threshold` |
-| `odds_below` | `current_price < threshold` |
-| `resolved` | `market.status == "resolved"` |
+| Loss threshold | `roi_pct < -20%` on any position |
+| Portfolio drawdown | `total_pnl_pct < -10%` |
+| Over-concentration | `largest_position_pct > 30%` |
+| Platform concentration | Any platform > 70% |
+| Category concentration | Any category > 50% |

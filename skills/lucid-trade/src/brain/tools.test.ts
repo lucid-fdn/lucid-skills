@@ -142,6 +142,25 @@ describe('brain tools', () => {
       expect(parsed.provenance.timeframe).toBe('4h');
       expect(parsed.provenance.candleCount).toBe(60);
     });
+
+    it('returns compact JSON when detail=compact', async () => {
+      const think = tools.find((t) => t.name === 'lucid_think')!;
+      const result = await think.execute({
+        query: 'analyze SOL on hyperliquid',
+        detail: 'compact',
+      });
+      const parsed = JSON.parse(result);
+      expect(parsed.evidence).toBeUndefined();
+      expect(parsed.verdict).toBeDefined();
+      expect(parsed.score).toBeGreaterThanOrEqual(0);
+      // rulesTriggered should only have id + contribution (no description/inputs)
+      if (parsed.rulesTriggered.length > 0) {
+        expect(parsed.rulesTriggered[0]).not.toHaveProperty('description');
+        expect(parsed.rulesTriggered[0]).not.toHaveProperty('inputs');
+        expect(parsed.rulesTriggered[0]).toHaveProperty('id');
+        expect(parsed.rulesTriggered[0]).toHaveProperty('contribution');
+      }
+    });
   });
 
   describe('lucid_scan', () => {

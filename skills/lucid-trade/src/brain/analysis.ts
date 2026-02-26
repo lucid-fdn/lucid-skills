@@ -270,15 +270,16 @@ export function runAnalysis(params: AnalysisParams): ThinkResult {
   if (currentHistogram !== undefined) {
     if (currentHistogram > 0) {
       macdContribution = 20;
-    } else {
+    } else if (currentHistogram < 0) {
       macdContribution = -20;
     }
+    // histogram === 0 => no contribution (neutral)
   }
   score += macdContribution;
   if (macdContribution !== 0) {
     rulesTriggered.push({
       id: 'macd',
-      description: `MACD histogram ${currentHistogram! > 0 ? 'bullish' : 'bearish'} (${val(currentHistogram).toFixed(2)})`,
+      description: `MACD histogram ${val(currentHistogram) > 0 ? 'bullish' : 'bearish'} (${val(currentHistogram).toFixed(2)})`,
       contribution: macdContribution,
       inputs: {
         histogram: round(val(currentHistogram), 2),

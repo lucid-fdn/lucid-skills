@@ -4,7 +4,7 @@
 
 import type { PluginConfig } from '../config.js';
 import type { AdapterRegistry } from '../adapters/registry.js';
-import { createTaTools } from './technical-analysis.js';
+import { createBrainTools } from '../brain/tools.js';
 
 // -- Tool type definitions ---------------------------------------------------
 
@@ -40,9 +40,16 @@ export interface ToolDependencies {
 
 /**
  * Instantiate every tool the trade MCP exposes.
+ *
+ * Brain tools (lucid_think, lucid_scan, etc.) are the primary interface.
+ * Granular TA tools are accessible via lucid_pro escape hatch.
  */
 export function createAllTools(deps: ToolDependencies): ToolDefinition[] {
   return [
-    ...createTaTools(deps.registry),
+    ...createBrainTools({
+      registry: deps.registry,
+      portfolioValue: 10_000, // default, overridden by memory layer later
+      riskPct: 2, // default
+    }),
   ];
 }
