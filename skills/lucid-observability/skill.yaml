@@ -1,7 +1,7 @@
 lucid: "1.0"
 name: lucid-observability
-version: "4.0.0"
-description: "Production observability triage, incident response, cross-service correlation, billing health monitoring, and OTel convention enforcement"
+version: "5.0.0"
+description: "Production observability intelligence — incident triage, severity scoring, temporal pattern detection, production readiness checks, and outbox health analysis"
 author: "Lucid Foundation"
 license: "MIT"
 
@@ -23,6 +23,18 @@ skills:
   - alerting
 
 heartbeat: HEARTBEAT.md
+
+entry:
+  mcp: dist/mcp.js
+  openclaw: dist/openclaw.js
+  bin: dist/bin.js
+
+tools:
+  - lucid_triage
+  - lucid_readiness
+  - lucid_outbox_health
+  - lucid_diagnose
+  - lucid_obs_pro
 
 platforms:
   claude-code: true

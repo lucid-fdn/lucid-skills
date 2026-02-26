@@ -1,13 +1,24 @@
 {
-  "name": "lucid-observability",
-  "version": "4.0.0",
-  "description": "Production observability skills for AI agents — triage, incident response, correlation, billing health, conventions, alerting",
+  "name": "@raijinlabs/observability",
+  "version": "5.0.0",
+  "description": "Observability intelligence — incident triage, severity scoring, pattern detection, production readiness checks",
   "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "observability-mcp": "dist/bin.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
   "license": "MIT",
   "author": "Lucid Foundation",
   "repository": {
     "type": "git",
-    "url": "https://github.com/daishizenSensei/lucid-observability-agent"
+    "url": "https://github.com/raijinlabs/lucid-skills"
   },
   "keywords": [
     "agentskills",
@@ -21,6 +32,7 @@
     "lucid-foundation"
   ],
   "files": [
+    "dist",
     "skills",
     "HEARTBEAT.md",
     "skill.yaml",
@@ -28,5 +40,15 @@
     "openclaw.plugin.json",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.3"
+  }
 }
