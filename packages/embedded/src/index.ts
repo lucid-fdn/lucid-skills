@@ -11,6 +11,8 @@
  *   // Connect via InMemoryTransport for in-process execution
  */
 
+export const VERSION = '1.3.0'
+
 export { createAuditServer } from '@raijinlabs/audit'
 export { createBridgeServer } from '@raijinlabs/bridge'
 export { createCompeteServer } from '@raijinlabs/compete'
