@@ -5,6 +5,7 @@
   "description": "Open-source AgentSkills plugin collection for the Lucid AI platform",
   "workspaces": [
     "skills/*",
+    "plugins/*",
     "packages/*"
   ],
   "scripts": {
