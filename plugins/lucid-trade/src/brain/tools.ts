@@ -5,12 +5,11 @@
 import type { ToolDefinition } from '../tools/index.js';
 import type { AdapterRegistry } from '../adapters/registry.js';
 import type { ExchangeId, Timeframe } from '../types/index.js';
-import type { ScanItem, ProtectCheck } from './types.js';
+import type { ScanItem } from './types.js';
 import { runAnalysis } from './analysis.js';
 import {
   formatThinkResult,
   formatScanResult,
-  formatProtectResult,
   formatReviewResult,
 } from './formatter.js';
 import { createTaTools } from '../tools/technical-analysis.js';
@@ -70,15 +69,17 @@ function parseQuery(
 // ---------------------------------------------------------------------------
 
 /**
- * Create the 7 brain MCP tools.
+ * Create brain MCP tools (5 tools).
  *
- * 1. lucid_think  — Deep analysis on a single pair
+ * 1. lucid_think  — Deep analysis on a single pair (structured verdict)
  * 2. lucid_scan   — Market scanning across instruments
- * 3. lucid_execute — Execute a trade (Phase 1: deferred)
- * 4. lucid_watch   — Set up alerts (Phase 1: deferred)
- * 5. lucid_protect — Risk check across open positions
- * 6. lucid_review  — Performance review (Phase 1: placeholder)
- * 7. lucid_pro     — Escape hatch to granular TA tools
+ * 3. lucid_watch  — Smart alerts (RSI-based, not just price) — Phase 1: deferred
+ * 4. lucid_review — AI performance review — Phase 1: placeholder
+ * 5. lucid_pro    — Escape hatch to granular TA tools
+ *
+ * Removed (duplicates of web3-operator built-in tools):
+ * - lucid_execute → use dex_swap / hl_place_order
+ * - lucid_protect → use risk_check
  */
 export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
   const { registry, portfolioValue, riskPct } = deps;
@@ -253,31 +254,7 @@ export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
     },
   };
 
-  // ---- 3. lucid_execute -----------------------------------------------------
-
-  const execute: ToolDefinition = {
-    name: 'lucid_execute',
-    description:
-      'Execute a trade based on analysis. Phase 1: deferred — returns guidance ' +
-      'message. Full execution requires adapter placeOrder support.',
-    params: {
-      action: {
-        type: 'string',
-        required: true,
-        description:
-          'Trade action, e.g. "buy SOL on hyperliquid", "sell BTC"',
-      },
-    },
-    execute: async (_params: Record<string, unknown>) => {
-      return (
-        'Trade execution is deferred in Phase 1. ' +
-        'Exchange adapters with placeOrder support are not yet available. ' +
-        'Use lucid_think to generate a trade plan, then execute manually on your preferred venue.'
-      );
-    },
-  };
-
-  // ---- 4. lucid_watch -------------------------------------------------------
+  // ---- 3. lucid_watch -------------------------------------------------------
 
   const watch: ToolDefinition = {
     name: 'lucid_watch',
@@ -301,104 +278,7 @@ export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
     },
   };
 
-  // ---- 5. lucid_protect -----------------------------------------------------
-
-  const protect: ToolDefinition = {
-    name: 'lucid_protect',
-    description:
-      'Risk check across all connected exchanges. Inspects open positions, ' +
-      'concentration, leverage, and drawdown.',
-    params: {},
-    execute: async (_params: Record<string, unknown>) => {
-      const checks: ProtectCheck[] = [];
-      const adapters = registry.list();
-      let totalExposure = 0;
-      let maxLeverage = 0;
-
-      for (const adapter of adapters) {
-        if (!adapter.getPositions) continue;
-
-        try {
-          const positions = await adapter.getPositions();
-          for (const pos of positions) {
-            const notional = Math.abs(pos.size * pos.markPrice);
-            totalExposure += notional;
-            if (pos.leverage > maxLeverage) maxLeverage = pos.leverage;
-
-            // Per-position check
-            const pnlPct =
-              pos.entryPrice > 0
-                ? ((pos.markPrice - pos.entryPrice) / pos.entryPrice) * 100
-                : 0;
-            const status =
-              Math.abs(pnlPct) > 10
-                ? 'danger'
-                : Math.abs(pnlPct) > 5
-                  ? 'warning'
-                  : 'ok';
-            checks.push({
-              name: `${adapter.exchangeId}:${pos.symbol}`,
-              status,
-              detail: `${pos.side} ${pos.size} @ $${pos.entryPrice} | Mark: $${pos.markPrice} | PnL: ${pnlPct.toFixed(1)}% | Lev: ${pos.leverage}x`,
-            });
-          }
-        } catch {
-          checks.push({
-            name: `${adapter.exchangeId}:positions`,
-            status: 'warning',
-            detail: 'Failed to fetch positions',
-          });
-        }
-      }
-
-      // Overall concentration check
-      if (portfolioValue > 0 && totalExposure > 0) {
-        const exposurePct = (totalExposure / portfolioValue) * 100;
-        const status =
-          exposurePct > 100 ? 'danger' : exposurePct > 50 ? 'warning' : 'ok';
-        checks.push({
-          name: 'Total Exposure',
-          status,
-          detail: `$${totalExposure.toFixed(0)} (${exposurePct.toFixed(1)}% of portfolio)`,
-        });
-      }
-
-      // Leverage check
-      if (maxLeverage > 1) {
-        const status =
-          maxLeverage > 10 ? 'danger' : maxLeverage > 5 ? 'warning' : 'ok';
-        checks.push({
-          name: 'Max Leverage',
-          status,
-          detail: `${maxLeverage}x`,
-        });
-      }
-
-      // If no adapters with getPositions or no positions found
-      if (checks.length === 0) {
-        checks.push({
-          name: 'Positions',
-          status: 'ok',
-          detail: 'No open positions detected',
-        });
-      }
-
-      // Determine overall risk
-      const hasDanger = checks.some((c) => c.status === 'danger');
-      const hasWarning = checks.some((c) => c.status === 'warning');
-      const overallRisk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' = hasDanger
-        ? maxLeverage > 10
-          ? 'CRITICAL'
-          : 'HIGH'
-        : hasWarning
-          ? 'MEDIUM'
-          : 'LOW';
-
-      return formatProtectResult({ overallRisk, checks });
-    },
-  };
-
-  // ---- 6. lucid_review ------------------------------------------------------
+  // ---- 4. lucid_review ------------------------------------------------------
 
   const review: ToolDefinition = {
     name: 'lucid_review',
@@ -469,5 +349,5 @@ export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
     },
   };
 
-  return [think, scan, execute, watch, protect, review, pro];
+  return [think, scan, watch, review, pro];
 }
