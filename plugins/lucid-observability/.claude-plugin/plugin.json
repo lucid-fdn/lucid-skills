@@ -1,5 +1,0 @@
-{
-  "name": "lucid-observability",
-  "description": "Production observability intelligence with brain layer — incident triage, severity scoring, temporal pattern detection, production readiness checks, and outbox health analysis",
-  "version": "5.0.0"
-}

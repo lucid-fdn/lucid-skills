@@ -1,0 +1,8 @@
+{
+  "id": "lucid-meet",
+  "name": "Lucid Meet",
+  "version": "1.0.0",
+  "type": "runtime",
+  "category": "operations",
+  "brainLayer": false
+}

@@ -1,0 +1,8 @@
+{
+  "id": "lucid-bridge",
+  "name": "Lucid Bridge",
+  "version": "1.0.0",
+  "type": "runtime",
+  "category": "operations",
+  "brainLayer": false
+}

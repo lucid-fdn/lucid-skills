@@ -1,0 +1,8 @@
+{
+  "id": "lucid-invoice",
+  "name": "Lucid Invoice",
+  "version": "1.0.0",
+  "type": "runtime",
+  "category": "analytics",
+  "brainLayer": false
+}

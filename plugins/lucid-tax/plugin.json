@@ -1,0 +1,8 @@
+{
+  "id": "lucid-tax",
+  "name": "Lucid Tax",
+  "version": "2.0.0",
+  "type": "runtime",
+  "category": "compliance",
+  "brainLayer": true
+}

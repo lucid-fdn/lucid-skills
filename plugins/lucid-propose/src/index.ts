@@ -7,7 +7,6 @@ export * from './core/tools/index.js';
 
 // Adapter exports
 export { createMcpServer, registerTools } from './adapters/mcp-adapter.js';
-export { createOpenClawPlugin, type OpenClawPlugin } from './adapters/openclaw-adapter.js';
 
 // Server export
 export { createProposeServer } from './mcp.js';

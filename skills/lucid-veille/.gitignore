@@ -1,9 +1,0 @@
-node_modules/
-dist/
-coverage/
-.env
-*.tsbuildinfo
-__pycache__/
-*.pyc
-.venv/
-.DS_Store

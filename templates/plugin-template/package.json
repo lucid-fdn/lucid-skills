@@ -1,0 +1,14 @@
+{
+  "name": "@lucid-fdn/PLUGIN_NAME",
+  "version": "1.0.0",
+  "description": "PLUGIN_DESCRIPTION",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  }
+}

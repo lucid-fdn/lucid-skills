@@ -1,0 +1,8 @@
+{
+  "id": "lucid-PLUGIN_NAME",
+  "name": "Lucid PLUGIN_NAME",
+  "version": "1.0.0",
+  "type": "runtime",
+  "category": "general",
+  "brainLayer": false
+}

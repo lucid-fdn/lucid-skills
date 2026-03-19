@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------
 
 // Default export: OpenClaw plugin registration
-export { default } from './openclaw.js';
 
 // MCP server factory
 export { createTradeServer } from './mcp.js';

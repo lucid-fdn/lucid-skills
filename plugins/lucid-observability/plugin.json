@@ -1,0 +1,8 @@
+{
+  "id": "lucid-observability",
+  "name": "Lucid Observability",
+  "version": "5.0.0",
+  "type": "runtime",
+  "category": "tools",
+  "brainLayer": true
+}

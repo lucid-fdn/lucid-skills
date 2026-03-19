@@ -1,0 +1,8 @@
+{
+  "id": "lucid-predict",
+  "name": "Lucid Predict",
+  "version": "5.0.0",
+  "type": "runtime",
+  "category": "trading",
+  "brainLayer": true
+}

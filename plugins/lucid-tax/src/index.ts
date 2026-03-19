@@ -1,6 +1,5 @@
 // Public API
 export { createTaxServer } from './adapters/mcp.js';
-export { createOpenClawManifest } from './adapters/openclaw.js';
 export { createTools } from './core/tools/index.js';
 export { loadConfig } from './core/config/loader.js';
 export { PLUGIN_ID, PLUGIN_NAME } from './core/plugin-id.js';

@@ -1,4 +1,3 @@
-export { default } from './openclaw.js';
 export { createProspectServer } from './mcp.js';
 export {
   PLUGIN_ID,

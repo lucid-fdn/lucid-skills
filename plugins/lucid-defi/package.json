@@ -1,0 +1,7 @@
+{
+  "name": "@lucid-fdn/defi",
+  "version": "1.0.0",
+  "description": "DeFi protocol knowledge for AI agents (docs only, no MCP server)",
+  "private": true,
+  "type": "module"
+}

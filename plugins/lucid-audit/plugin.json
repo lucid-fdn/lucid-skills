@@ -1,0 +1,8 @@
+{
+  "id": "lucid-audit",
+  "name": "Lucid Audit",
+  "version": "2.0.0",
+  "type": "runtime",
+  "category": "compliance",
+  "brainLayer": true
+}

@@ -1,5 +1,4 @@
 export { createRecruitServer } from './mcp.js';
-export { getOpenClawManifest } from './openclaw.js';
 export { PLUGIN_ID, PLUGIN_NAME } from './core/plugin-id.js';
 
 // Types

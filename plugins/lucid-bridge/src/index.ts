@@ -1,4 +1,3 @@
-export { default } from './openclaw.js';
 
 // Re-export core types and utilities for library consumers
 export { PLUGIN_ID, PLUGIN_NAME, PLUGIN_VERSION } from './core/plugin-id.js';

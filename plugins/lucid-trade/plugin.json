@@ -1,0 +1,8 @@
+{
+  "id": "lucid-trade",
+  "name": "Lucid Trade",
+  "version": "5.0.0",
+  "type": "runtime",
+  "category": "trading",
+  "brainLayer": true
+}
