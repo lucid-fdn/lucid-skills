@@ -14,9 +14,9 @@ for plugin_dir in plugins/lucid-*; do
     ERRORS=$((ERRORS + 1))
   fi
 
-  # Check docs/SKILL.md exists
-  if [ ! -f "$plugin_dir/docs/SKILL.md" ]; then
-    echo "WARN:  $name missing docs/SKILL.md"
+  # Check matching skill exists in skills/
+  if [ ! -f "skills/$name/SKILL.md" ]; then
+    echo "WARN:  $name missing skills/$name/SKILL.md"
     WARNS=$((WARNS + 1))
   fi
 

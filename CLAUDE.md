@@ -11,8 +11,13 @@ bash scripts/validate-plugin-structure.sh
 
 ## Structure
 ```
-plugins/
-  lucid-trade/              # Crypto trading intelligence (brain layer, 7 tools)
+skills/                       # Pure markdown — model behavior, knowledge, workflow guidance
+  lucid-trade/
+    SKILL.md                  # Catalog import entrypoint
+    references/               # Detailed sub-area docs
+
+plugins/                      # TypeScript MCP servers — runtime tools, executable code
+  lucid-trade/              # Crypto trading intelligence (brain layer, 5 tools)
   lucid-audit/              # Smart contract security (brain layer, 5 tools)
   lucid-seo/                # SEO intelligence
   lucid-predict/            # Prediction markets (brain layer)
@@ -47,22 +52,26 @@ scripts/
   merge-skills-into-plugins.sh
 ```
 
-## Plugin Structure (per plugin)
+## Separation of Concerns
 ```
-plugins/lucid-trade/
-  package.json              # @lucid-fdn/trade
-  plugin.json               # Lucid metadata (type, category, brainLayer)
+skills/lucid-trade/           # Knowledge layer (pure markdown, no code)
+  SKILL.md                    # Compact skill prompt (importable to catalog)
+  references/                 # Detailed sub-area docs
+
+plugins/lucid-trade/          # Runtime layer (TypeScript, executable)
+  package.json                # @lucid-fdn/trade
+  plugin.json                 # Lucid metadata (type, category, brainLayer)
   README.md
-  src/                      # TypeScript MCP server
-    index.ts                # Barrel export
-    mcp.ts                  # createXxxServer() factory
-    brain/                  # Brain layer (optional): types, analysis, tools, formatter
-    tools/                  # Granular tools
-  docs/
-    SKILL.md                # Compact skill prompt (importable to catalog)
-    references/             # Detailed sub-area docs
+  src/
+    index.ts                  # Barrel export
+    mcp.ts                    # createXxxServer() factory
+    brain/                    # Brain layer (optional): types, analysis, tools, formatter
+    tools/                    # Granular tools
   test/
 ```
+
+A plugin can reference its matching skill, but it does not own it.
+Skills are edited independently — no build step, no TypeScript.
 
 ## Plugin Types
 - **runtime**: Has `src/`, builds an MCP server, bundled into `@lucid-fdn/skills-embedded`
