@@ -1,22 +1,21 @@
 {
   "name": "@lucid-fdn/moralis",
   "version": "1.0.0",
-  "description": "Moralis blockchain data intelligence MCP server — token security, OHLCV, whale tracking, liquidity",
+  "description": "Lucid Data Intelligence — 80+ blockchain data tools powered by Moralis",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "build": "tsup",
     "test": "vitest run"
   },
   "dependencies": {
-    "moralis": "^2.30.0"
+    "@moralisweb3/api-mcp-server": "^1.8.2"
   },
   "peerDependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0"
   },
   "devDependencies": {
     "tsup": "^8.0.0",
-    "vitest": "^3.0.0",
     "typescript": "^5.0.0"
   }
 }

@@ -1,16 +1,18 @@
 ---
 name: lucid-moralis
-description: Enterprise-grade blockchain data intelligence powered by Moralis. Token security scores, OHLCV candles, whale tracking, liquidity analysis, and wallet profiling across EVM + Solana.
+description: Enterprise blockchain data intelligence — 80+ tools for token analysis, wallet profiling, whale tracking, security scoring, OHLCV candles, liquidity, DeFi positions across EVM + Solana.
 type: runtime
 ---
 
-# Moralis Data Intelligence
+# Lucid Data Intelligence
 
-Deep blockchain data for trading decisions. Use these tools to assess token safety, analyze market structure, track whale movements, and profile wallets before making trading decisions.
+80+ blockchain data tools for trading decisions. Covers token analysis, wallet intelligence, whale tracking, security assessment, and market data across all major EVM chains + Solana.
 
-## When to Use
-- Before any trade: check token security score
-- For technical analysis: get OHLCV candles
-- For market structure: check liquidity and top holders
-- For alpha: track whale wallet movements
-- For due diligence: profile any wallet's full history
+## Key Capabilities
+- Token security scores, honeypot/rug detection
+- Real-time prices + OHLCV candlestick data
+- Top holders + whale concentration
+- Liquidity depth per DEX pair
+- Wallet portfolio + cross-chain net worth
+- Token transfers + swap history
+- DeFi positions (LP, staking, lending)
