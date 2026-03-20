@@ -1,6 +1,6 @@
 {
   "name": "@lucid-fdn/skills-embedded",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "All lucid-skills MCP server factories bundled for in-process embedding",
   "type": "module",
   "main": "dist/index.js",
