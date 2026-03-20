@@ -81,8 +81,43 @@ A plugin can reference its matching skill, but it does not own it.
 1. Copy `templates/plugin-template/` to `lucid-<name>/plugin/`
 2. Create `lucid-<name>/skill/SKILL.md`
 3. Replace placeholders
-4. Register in `packages/embedded/src/index.ts`
+4. Register factory in `packages/embedded/src/index.ts`
 5. Run `bash scripts/validate-plugin-structure.sh`
+6. Push to main — CI handles the rest (see below)
+
+## CI/CD Pipelines (fully automated)
+
+### Skills (auto-import on push)
+```
+Edit lucid-<name>/skill/SKILL.md → push to main
+  → .github/workflows/import-skills.yml
+  → scripts/ci-import-skill.mjs
+  → Supabase skill_catalog (status=approved)
+  → Available to agents immediately
+```
+
+### Plugins (auto-build + publish on push)
+```
+Edit lucid-<name>/plugin/src/ → push to main
+  → .github/workflows/publish-embedded.yml
+  → Builds all plugins → builds embedded bundle
+  → Auto-bumps version if needed
+  → Publishes @lucid-fdn/skills-embedded to npm
+  → Worker picks up on next deploy (semver ^)
+```
+
+### Worker integration (LucidMerged repo)
+After a new plugin is published, the worker needs:
+1. Register factory in `worker/src/agent/embedded-skill-loader.ts`
+2. Seed `plugin_catalog` (SQL migration with tool_manifest)
+3. Deploy worker on Railway
+
+### Secrets (GitHub repo settings)
+| Secret | Purpose |
+|--------|---------|
+| `SUPABASE_URL` | Skill import target DB |
+| `SUPABASE_SERVICE_ROLE_KEY` | DB write access |
+| `NPM_PUBLISH_TOKEN` | Publish to npmjs.org |
 
 ## Conventions
 - Feature folders: `lucid-<name>`
