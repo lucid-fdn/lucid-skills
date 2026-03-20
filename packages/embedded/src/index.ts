@@ -11,7 +11,7 @@
  *   // Connect via InMemoryTransport for in-process execution
  */
 
-export const VERSION = '1.4.3'
+export const VERSION = '1.4.4'
 
 // Registry for managing embedded MCP servers
 export { EmbeddedRegistry } from './registry.js'
