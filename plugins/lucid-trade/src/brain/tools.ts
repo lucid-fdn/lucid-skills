@@ -259,22 +259,86 @@ export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
   const watch: ToolDefinition = {
     name: 'lucid_watch',
     description:
-      'Set up price alerts and monitoring. Phase 1: deferred — persistence ' +
-      'layer not yet available.',
+      'Set up a smart alert for a trading pair. Analyzes the condition using ' +
+      'technical indicators (RSI, MACD, price levels) and returns a cron_schedule ' +
+      'instruction for the agent to execute. The scheduled task will run lucid_think ' +
+      'periodically and notify the user when the condition is met.',
     params: {
       condition: {
         type: 'string',
         required: true,
         description:
-          'Alert condition, e.g. "SOL drops below $120", "BTC RSI < 30"',
+          'Alert condition, e.g. "SOL drops below $120", "BTC RSI < 30", "ETH breaks above $4000"',
+      },
+      interval: {
+        type: 'string',
+        required: false,
+        description: 'Check interval: "5m", "15m", "1h", "4h". Default: "15m"',
+        default: '15m',
       },
     },
-    execute: async (_params: Record<string, unknown>) => {
-      return (
-        'Alert/watch functionality is deferred in Phase 1. ' +
-        'A persistence layer is required for alert storage and monitoring. ' +
-        'Use lucid_think for one-time analysis instead.'
-      );
+    execute: async (params: Record<string, unknown>) => {
+      const condition = (params.condition as string) || '';
+      const interval = (params.interval as string) || '15m';
+
+      // Parse the condition to extract symbol and thresholds
+      const exchangeIds = registry.list().map((a) => a.exchangeId);
+      const parsed = parseQuery(condition, exchangeIds);
+      const symbol = parsed.symbol ?? 'BTC/USDT';
+
+      // Run current analysis to establish baseline
+      const exchangeId = parsed.exchange ?? exchangeIds[0];
+      let currentAnalysis = 'Unable to fetch current state';
+      if (exchangeId) {
+        const adapter = registry.get(exchangeId as ExchangeId);
+        if (adapter) {
+          try {
+            const candles = await adapter.getCandles({
+              exchange: exchangeId as ExchangeId,
+              symbol,
+              timeframe: '4h' as Timeframe,
+              limit: 60,
+            });
+            const result = runAnalysis({
+              symbol,
+              candles,
+              portfolioValue,
+              riskPct,
+            });
+            currentAnalysis = `Current: ${symbol} score=${result.score}, verdict=${result.verdict}, RSI=${result.evidence?.rsi ?? 'N/A'}`;
+          } catch {
+            currentAnalysis = `Could not fetch ${symbol} data`;
+          }
+        }
+      }
+
+      // Map interval to cron expression
+      const cronMap: Record<string, string> = {
+        '5m': '*/5 * * * *',
+        '15m': '*/15 * * * *',
+        '30m': '*/30 * * * *',
+        '1h': '0 * * * *',
+        '4h': '0 */4 * * *',
+      };
+      const cronExpr = cronMap[interval] || '*/15 * * * *';
+
+      return JSON.stringify({
+        status: 'ready',
+        watch: {
+          symbol,
+          condition,
+          interval,
+          baseline: currentAnalysis,
+        },
+        action: {
+          tool: 'cron_schedule',
+          params: {
+            cron_expression: cronExpr,
+            task_prompt: `Run lucid_think on ${symbol}. Check if this condition is met: "${condition}". If met, send a clear alert message to the user with the current analysis. If not met, reply NO_REPLY.`,
+          },
+          instruction: 'Call cron_schedule with these params to activate the watch. Tell the user the alert is set.',
+        },
+      });
     },
   };
 
@@ -283,27 +347,140 @@ export function createBrainTools(deps: BrainDeps): ToolDefinition[] {
   const review: ToolDefinition = {
     name: 'lucid_review',
     description:
-      'Performance review of trading history. Phase 1: placeholder — ' +
-      'requires memory layer for trade history.',
+      'AI-powered trading performance review. Analyzes all connected exchanges, ' +
+      'scores each position with lucid_think, and returns a structured report ' +
+      'with best/worst performers, overall risk, and actionable suggestions.',
     params: {
-      period: {
-        type: 'string',
+      detail: {
+        type: 'enum',
+        values: ['summary', 'full'],
+        default: 'summary',
         required: false,
-        description: 'Review period, e.g. "7d", "30d", "all"',
-        default: '7d',
+        description: 'Detail level: summary (quick overview) or full (per-position analysis)',
       },
     },
     execute: async (params: Record<string, unknown>) => {
-      const period = (params.period as string) || '7d';
+      const detail = (params.detail as string) || 'summary';
+      const adapters = registry.list();
+
+      if (adapters.length === 0) {
+        return formatReviewResult({
+          period: 'current',
+          totalPnl: 'N/A',
+          winRate: 'N/A',
+          sharpe: 0,
+          bestSetup: 'N/A',
+          worstSetup: 'N/A',
+          suggestion: 'No exchanges connected. Connect an exchange adapter to enable performance review.',
+        });
+      }
+
+      // Gather positions from all exchanges
+      const positions: Array<{
+        exchange: string;
+        symbol: string;
+        side: string;
+        pnlPct: number;
+        score: number;
+        verdict: string;
+      }> = [];
+
+      for (const adapter of adapters) {
+        if (!adapter.getPositions) continue;
+        try {
+          const adapterPositions = await adapter.getPositions();
+          for (const pos of adapterPositions) {
+            const pnlPct = pos.entryPrice > 0
+              ? ((pos.markPrice - pos.entryPrice) / pos.entryPrice) * 100
+              : 0;
+
+            let score = 50;
+            let verdict = 'HOLD';
+
+            // Run lucid_think on each position for AI analysis (full mode only)
+            if (detail === 'full') {
+              try {
+                const candles = await adapter.getCandles({
+                  exchange: adapter.exchangeId,
+                  symbol: pos.symbol,
+                  timeframe: '4h' as Timeframe,
+                  limit: 60,
+                });
+                const analysis = runAnalysis({
+                  symbol: pos.symbol,
+                  candles,
+                  portfolioValue,
+                  riskPct,
+                });
+                score = analysis.score;
+                verdict = analysis.verdict;
+              } catch {
+                // Skip analysis if candles unavailable
+              }
+            }
+
+            positions.push({
+              exchange: adapter.exchangeId,
+              symbol: pos.symbol,
+              side: pos.side,
+              pnlPct,
+              score,
+              verdict,
+            });
+          }
+        } catch {
+          // Skip exchanges that fail
+        }
+      }
+
+      if (positions.length === 0) {
+        return formatReviewResult({
+          period: 'current',
+          totalPnl: 'No open positions',
+          winRate: 'N/A',
+          sharpe: 0,
+          bestSetup: 'N/A',
+          worstSetup: 'N/A',
+          suggestion: 'No open positions found. Use lucid_scan to find opportunities.',
+        });
+      }
+
+      // Calculate stats
+      const winners = positions.filter(p => p.pnlPct > 0);
+      const losers = positions.filter(p => p.pnlPct <= 0);
+      const avgPnl = positions.reduce((sum, p) => sum + p.pnlPct, 0) / positions.length;
+      const best = positions.reduce((a, b) => a.pnlPct > b.pnlPct ? a : b);
+      const worst = positions.reduce((a, b) => a.pnlPct < b.pnlPct ? a : b);
+      const winRate = positions.length > 0
+        ? `${((winners.length / positions.length) * 100).toFixed(0)}%`
+        : 'N/A';
+
+      // Simple Sharpe approximation
+      const mean = avgPnl;
+      const variance = positions.reduce((sum, p) => sum + Math.pow(p.pnlPct - mean, 2), 0) / positions.length;
+      const stdDev = Math.sqrt(variance);
+      const sharpe = stdDev > 0 ? mean / stdDev : 0;
+
+      // Suggestion based on analysis
+      let suggestion = '';
+      if (avgPnl < -5) {
+        suggestion = 'Portfolio is underwater. Consider tightening stop losses and reducing position sizes.';
+      } else if (losers.length > winners.length) {
+        suggestion = 'More losing positions than winning. Review entry criteria and consider closing weakest positions.';
+      } else if (worst.pnlPct < -10) {
+        suggestion = `${worst.symbol} is down ${worst.pnlPct.toFixed(1)}%. Consider cutting losses or adding a stop loss.`;
+      } else {
+        suggestion = 'Portfolio is performing well. Consider taking partial profits on top performers.';
+      }
+
       return formatReviewResult({
-        period,
-        totalPnl: '$0.00 (no history)',
-        winRate: 'N/A',
-        sharpe: 0,
-        bestSetup: 'N/A — no trades recorded yet',
-        worstSetup: 'N/A — no trades recorded yet',
-        suggestion:
-          'Connect a persistence layer to track trade history and generate performance reviews.',
+        period: 'current',
+        totalPnl: `Avg: ${avgPnl.toFixed(2)}% across ${positions.length} positions (${winners.length}W/${losers.length}L)`,
+        winRate,
+        sharpe: Number(sharpe.toFixed(2)),
+        bestSetup: `${best.symbol} on ${best.exchange}: +${best.pnlPct.toFixed(1)}%${detail === 'full' ? ` (score=${best.score}, ${best.verdict})` : ''}`,
+        worstSetup: `${worst.symbol} on ${worst.exchange}: ${worst.pnlPct.toFixed(1)}%${detail === 'full' ? ` (score=${worst.score}, ${worst.verdict})` : ''}`,
+        suggestion,
       });
     },
   };
