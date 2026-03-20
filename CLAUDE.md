@@ -39,7 +39,11 @@ scripts/
 
 A plugin can reference its matching skill, but it does not own it.
 
-## Features (20 total)
+## Features (22 total)
+
+### Data Intelligence (blockchain data providers)
+- **lucid-moralis** — Lucid EVM Intelligence: 141 EVM tools (token security, OHLCV, whale tracking, wallet profiling, liquidity, DeFi). Wraps `@moralisweb3/api-mcp-server`. Env: `MORALIS_API_KEY`
+- **lucid-helius** — Lucid Solana Intelligence: 63 Solana tools (wallet analysis, token holders, tx parsing, webhooks, streaming, transfers). Wraps `helius-mcp`. Env: `HELIUS_API_KEY`
 
 ### With Brain Layer (structured verdict/score/evidence)
 - **lucid-trade** — crypto trading intelligence (5 tools: think, scan, watch, review, pro)
@@ -66,6 +70,20 @@ A plugin can reference its matching skill, but it does not own it.
 
 ### Docs-Only
 - **lucid-defi** — DeFi protocols (no MCP server)
+
+## Data Intelligence Architecture
+```
+Internal agents (embedded, 1-5ms):
+  lucid-moralis → @moralisweb3/api-mcp-server → Moralis API → 141 EVM tools
+  lucid-helius  → helius-mcp → Helius API → 63 Solana tools
+
+External users (MCPGate HTTP, 50-200ms):
+  MCPGate → moralis server → same 141 tools
+  MCPGate → helius server  → same 63 tools
+
+Internal branding: "Lucid EVM Intelligence" / "Lucid Solana Intelligence"
+MCPGate branding: "moralis" / "helius" (external users know provider names)
+```
 
 ## Workspaces
 ```json
