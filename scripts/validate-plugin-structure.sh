@@ -3,49 +3,29 @@ set -euo pipefail
 ERRORS=0
 WARNS=0
 
-echo "=== Validating plugin structure ==="
+echo "=== Validating feature structure ==="
 
-for plugin_dir in plugins/lucid-*; do
-  name=$(basename "$plugin_dir")
+for feature_dir in lucid-*/; do
+  name=$(basename "$feature_dir")
 
-  # Check package.json exists
-  if [ ! -f "$plugin_dir/package.json" ]; then
-    echo "ERROR: $name missing package.json"
-    ERRORS=$((ERRORS + 1))
-  fi
-
-  # Check matching skill exists in skills/
-  if [ ! -f "skills/$name/SKILL.md" ]; then
-    echo "WARN:  $name missing skills/$name/SKILL.md"
+  # Check skill/SKILL.md exists
+  if [ ! -f "$feature_dir/skill/SKILL.md" ]; then
+    echo "WARN:  $name missing skill/SKILL.md"
     WARNS=$((WARNS + 1))
   fi
 
-  # Check no orphaned OpenClaw files
-  for f in skill.yaml openclaw.plugin.json; do
-    if [ -f "$plugin_dir/$f" ]; then
-      echo "WARN:  $name still has $f"
+  # Check plugin exists (optional for docs-only features)
+  if [ -d "$feature_dir/plugin" ]; then
+    if [ ! -f "$feature_dir/plugin/package.json" ]; then
+      echo "ERROR: $name/plugin missing package.json"
+      ERRORS=$((ERRORS + 1))
+    fi
+    if [ ! -f "$feature_dir/plugin/plugin.json" ]; then
+      echo "WARN:  $name/plugin missing plugin.json"
       WARNS=$((WARNS + 1))
     fi
-  done
-
-  # Check plugin.json exists
-  if [ ! -f "$plugin_dir/plugin.json" ]; then
-    echo "WARN:  $name missing plugin.json"
-    WARNS=$((WARNS + 1))
   fi
 done
-
-# Check no orphaned skills/ entries without plugin
-if [ -d "skills" ]; then
-  for skill_dir in skills/lucid-*; do
-    [ ! -d "$skill_dir" ] && continue
-    name=$(basename "$skill_dir")
-    if [ ! -d "plugins/$name" ]; then
-      echo "WARN:  skills/$name has no matching plugin"
-      WARNS=$((WARNS + 1))
-    fi
-  done
-fi
 
 echo ""
 echo "Results: $ERRORS errors, $WARNS warnings"
