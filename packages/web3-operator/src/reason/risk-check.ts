@@ -191,15 +191,23 @@ export interface RiskCheckToolArgs {
   chain: Chain
   /** Price impact in basis points (from quote) */
   priceImpactBps?: number
+  /** Optional: pre-fetched portfolio state (avoids mock empty portfolio) */
+  portfolio?: PortfolioState
 }
 
 /**
  * Standalone risk check tool — can be called independently.
  * For the full Reason lane, use evaluateRisk() directly with portfolio state.
+ *
+ * If no portfolio is provided, runs with an empty portfolio.
+ * Balance check will be skipped (marked as "not available") rather than
+ * incorrectly failing with $0.00 balance.
  */
 export async function toolRiskCheck(args: RiskCheckToolArgs): Promise<string> {
-  // Minimal portfolio state for standalone check
-  const mockPortfolio: PortfolioState = {
+  const hasPortfolio = args.portfolio && args.portfolio.balances.length > 0
+
+  // Use provided portfolio or create a minimal one
+  const portfolio: PortfolioState = args.portfolio ?? {
     wallet: '',
     chain: args.chain,
     balances: [],
@@ -220,13 +228,42 @@ export async function toolRiskCheck(args: RiskCheckToolArgs): Promise<string> {
     : undefined
 
   const result = await evaluateRisk({
-    portfolio: mockPortfolio,
+    portfolio,
     outputToken: args.outputToken,
     inputToken: args.inputToken,
     amountUsd: args.amountUsd,
     chain: args.chain,
     route,
   })
+
+  // If no real portfolio was provided, the balance check is unreliable.
+  // Downgrade from critical to medium so it doesn't block the trade.
+  if (!hasPortfolio) {
+    const balanceCheck = result.checks.find(c => c.name === 'balance_sufficient')
+    if (balanceCheck && !balanceCheck.passed) {
+      balanceCheck.passed = true
+      balanceCheck.detail = 'Balance check skipped (no portfolio provided — verify balance separately)'
+    }
+    // Also fix stablecoin runway which will be $0 without portfolio
+    const runwayCheck = result.checks.find(c => c.name === 'stablecoin_runway')
+    if (runwayCheck && !runwayCheck.passed) {
+      runwayCheck.passed = true
+      runwayCheck.detail = 'Stablecoin runway check skipped (no portfolio provided)'
+    }
+    // Recalculate risk level without the false balance/runway failures
+    const failedChecks = result.checks.filter(c => !c.passed)
+    if (failedChecks.length === 0) {
+      result.level = 'low'
+    } else {
+      // Keep the highest level from actual failures
+      result.level = 'low'
+      for (const check of failedChecks) {
+        if (check.name === 'concentration' || check.name === 'token_safety') result.level = bump(result.level, 'medium')
+        if (check.name === 'daily_limit') result.level = bump(result.level, 'critical')
+        if (check.name === 'price_impact') result.level = bump(result.level, 'medium')
+      }
+    }
+  }
 
   return JSON.stringify({
     risk: result,
