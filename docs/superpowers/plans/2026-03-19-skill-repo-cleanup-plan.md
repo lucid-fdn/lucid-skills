@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Simplify the lucid-skills monorepo by eliminating the `skills/` vs `plugins/` duality, standardizing naming, and making each plugin self-contained.
+**Goal:** Simplify the lucid-plugins monorepo by eliminating the `skills/` vs `plugins/` duality, standardizing naming, and making each plugin self-contained.
 
 **Architecture:** Merge `skills/` (markdown knowledge) into `plugins/` (TypeScript MCP servers) as co-located `docs/` folders. Each plugin becomes a single self-contained package. Drop OpenClaw-specific files. Add validation before deleting anything.
 

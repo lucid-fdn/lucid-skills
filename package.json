@@ -1,5 +1,5 @@
 {
-  "name": "lucid-skills",
+  "name": "lucid-plugins",
   "version": "1.0.0",
   "private": true,
   "description": "Open-source AgentSkills plugin collection for the Lucid AI platform",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucid-fdn/lucid-skills.git"
+    "url": "https://github.com/lucid-fdn/lucid-plugins.git"
   },
   "license": "MIT",
   "author": "Lucid <contact@lucid.com>",

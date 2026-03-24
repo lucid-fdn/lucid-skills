@@ -1,4 +1,4 @@
-# lucid-skills
+# lucid-plugins
 
 ## What This Is
 Open-source monorepo of AI agent capabilities for the Lucid platform. Each feature is a self-contained folder with a skill (knowledge) and plugin (runtime) side.
@@ -20,7 +20,7 @@ lucid-defi/                   # Docs-only feature (no plugin)
     SKILL.md
 
 packages/
-  embedded/                   # @lucid-fdn/skills-embedded — bundled MCP factories
+  embedded/                   # @lucid-fdn/plugins-embedded — bundled MCP factories
   web3-operator/              # @lucid-fdn/web3-operator — 12 web3 tools
   web3-types/                 # @lucid-fdn/web3-types — TypeScript interfaces
   agent-tools-core/           # @lucid-fdn/agent-tools-core — tool metadata
@@ -93,7 +93,7 @@ MCPGate branding: "moralis" / "helius" (external users know provider names)
 ```
 
 ## Embedded Bundle
-`packages/embedded/` re-exports all MCP server factories. Built with tsup, published as `@lucid-fdn/skills-embedded`. Used by the worker for in-process execution via InMemoryTransport.
+`packages/embedded/` re-exports all MCP server factories. Built with tsup, published as `@lucid-fdn/plugins-embedded`. Used by the worker for in-process execution via InMemoryTransport.
 
 ## Creating a New Feature
 1. Copy `templates/plugin-template/` to `lucid-<name>/plugin/`
@@ -120,13 +120,13 @@ Edit lucid-<name>/plugin/src/ → push to main
   → .github/workflows/publish-embedded.yml
   → Builds all plugins → builds embedded bundle
   → Auto-bumps version if needed
-  → Publishes @lucid-fdn/skills-embedded to npm
+  → Publishes @lucid-fdn/plugins-embedded to npm
   → Worker picks up on next deploy (semver ^)
 ```
 
 ### Worker integration (LucidMerged repo)
 After a new plugin is published, the worker needs:
-1. Register factory in `worker/src/agent/embedded-skill-loader.ts`
+1. Register factory in `worker/src/agent/embedded-plugin-loader.ts`
 2. Seed `plugin_catalog` (SQL migration with tool_manifest)
 3. Deploy worker on Railway
 

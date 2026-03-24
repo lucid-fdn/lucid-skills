@@ -4,7 +4,7 @@
 
 **Goal:** Build `lucid-video`, a TypeScript MCP plugin for agent-native video generation using Remotion, following the patterns established by lucid-veille.
 
-**Architecture:** Three layers — (1) MCP plugin in lucid-skills with 5 tools and a VideoBrief schema, (2) rendering engine service for hybrid Lambda/Railway rendering, (3) control plane routes in LucidMerged. This plan covers layer 1 (the plugin) and its documentation.
+**Architecture:** Three layers — (1) MCP plugin in lucid-plugins with 5 tools and a VideoBrief schema, (2) rendering engine service for hybrid Lambda/Railway rendering, (3) control plane routes in LucidMerged. This plan covers layer 1 (the plugin) and its documentation.
 
 **Tech Stack:** TypeScript, Remotion (`@remotion/renderer`, `@remotion/bundler`, `@remotion/lambda`), MCP SDK, Zod, Supabase, Upstash Redis, tsup, vitest
 
@@ -63,7 +63,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/raijinlabs/lucid-skills.git",
+    "url": "https://github.com/lucid-fdn/lucid-plugins.git",
     "directory": "skills/lucid-video"
   },
   "keywords": [
@@ -1759,7 +1759,7 @@ MIT
 ## Installation
 
 ```bash
-# In the lucid-skills monorepo
+# In the lucid-plugins monorepo
 cd skills/lucid-video
 npm install
 
@@ -2059,22 +2059,22 @@ git commit -m "docs(lucid-video): add README, getting started, brief reference, 
 
 **Step 1: Run monorepo validation**
 
-Run: `cd /c/lucid-skills && bash scripts/validate-all.sh`
+Run: `cd /c/lucid-plugins && bash scripts/validate-all.sh`
 Expected: lucid-video passes all checks
 
 **Step 2: Run plugin tests**
 
-Run: `cd /c/lucid-skills/skills/lucid-video && npm install && npx vitest run`
+Run: `cd /c/lucid-plugins/skills/lucid-video && npm install && npx vitest run`
 Expected: ALL PASS
 
 **Step 3: Run build**
 
-Run: `cd /c/lucid-skills/skills/lucid-video && npx tsup`
+Run: `cd /c/lucid-plugins/skills/lucid-video && npx tsup`
 Expected: Clean build, all entry points in dist/
 
 **Step 4: Run typecheck**
 
-Run: `cd /c/lucid-skills/skills/lucid-video && npx tsc --noEmit`
+Run: `cd /c/lucid-plugins/skills/lucid-video && npx tsc --noEmit`
 Expected: No errors
 
 **Step 5: Final commit**

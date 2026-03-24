@@ -883,7 +883,7 @@ Bloomberg-level: premium, professional, data-dense but clean.
 
 ### Go-To-Market Strategy
 
-1. **Launch**: Open-source `@lucid-skills/brain` with trade domain. Free, standalone MCP. "7 tools" messaging.
+1. **Launch**: Open-source `@lucid-plugins/brain` with trade domain. Free, standalone MCP. "7 tools" messaging.
 2. **Demo**: Side-by-side video — Senpi (8 tool calls, 30 seconds) vs Lucid Brain (1 call, instant). The demo IS the marketing.
 3. **Community**: OpenClaw plugin marketplace. Anyone can build a domain adapter. "npm create lucid-domain" scaffold.
 4. **SaaS upsell**: "Brain works free. Memory makes it yours." Lucid platform adds personalization, cross-domain, team features.

@@ -4,7 +4,7 @@
  * Uses dynamic imports with explicit paths to avoid ESM exports resolution issues.
  *
  * Usage:
- *   cd /c/lucid-skills
+ *   cd /c/lucid-plugins
  *   npx tsx scripts/extract-tool-manifests.ts > tool-manifests.json
  */
 

@@ -18,7 +18,7 @@
   "author": "Lucid Foundation",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucid-fdn/lucid-skills"
+    "url": "https://github.com/lucid-fdn/lucid-plugins"
   },
   "keywords": [
     "agentskills",

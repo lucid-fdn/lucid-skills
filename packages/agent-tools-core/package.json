@@ -25,7 +25,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucid-fdn/lucid-skills.git",
+    "url": "https://github.com/lucid-fdn/lucid-plugins.git",
     "directory": "packages/agent-tools-core"
   },
   "keywords": ["ai", "agent", "tools", "llm", "prompt", "mcp"]

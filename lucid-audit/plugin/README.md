@@ -210,7 +210,7 @@ npm run build              # tsup (CJS + ESM + DTS)
 
 ## Part of Lucid Skills
 
-This package is part of the [lucid-skills](https://github.com/raijinlabs/lucid-skills) monorepo — 19 total tools (14 core + 5 brain).
+This package is part of the [lucid-plugins](https://github.com/lucid-fdn/lucid-plugins) monorepo — 19 total tools (14 core + 5 brain).
 
 ## License
 

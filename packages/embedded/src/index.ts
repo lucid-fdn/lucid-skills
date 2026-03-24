@@ -1,7 +1,7 @@
 /**
  * Embedded Skills Bundle
  *
- * Re-exports all lucid-skills MCP server factory functions for in-process
+ * Re-exports all lucid-plugins MCP server factory functions for in-process
  * embedding via InMemoryTransport. Each factory creates a bare McpServer
  * that can be connected to any MCP transport.
  *

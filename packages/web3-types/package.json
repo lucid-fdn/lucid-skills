@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucid-fdn/lucid-skills.git",
+    "url": "https://github.com/lucid-fdn/lucid-plugins.git",
     "directory": "packages/web3-types"
   },
   "license": "MIT",

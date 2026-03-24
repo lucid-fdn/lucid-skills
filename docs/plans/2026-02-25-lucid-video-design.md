@@ -9,7 +9,7 @@
 `lucid-video` is a TypeScript MCP plugin for programmatic video generation using Remotion. It enables AI agents to generate marketing content, data-driven reports, personalized outreach videos, and more — through a standardized `VideoBrief` schema that any Lucid plugin can emit.
 
 Three-layer architecture:
-1. **Plugin** (`lucid-video` in lucid-skills) — agent-facing MCP tools
+1. **Plugin** (`lucid-video` in lucid-plugins) — agent-facing MCP tools
 2. **Control plane** (LucidMerged `/video` dashboard) — human-facing UI
 3. **Rendering engine** (Railway service) — hybrid Lambda + self-hosted Remotion rendering
 
@@ -21,7 +21,7 @@ Agent/Human ───┤                                      ──► Renderin
                     └─ LucidMerged dashboard (/video)       (Lambda/Railway)
 ```
 
-### Plugin (lucid-skills, open source, MIT)
+### Plugin (lucid-plugins, open source, MIT)
 - MCP tools: `render_video`, `list_templates`, `get_render_status`, `preview_thumbnail`, `cancel_render`
 - VideoBrief schema — the cross-plugin protocol
 - Calls rendering engine API

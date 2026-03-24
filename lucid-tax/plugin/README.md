@@ -194,7 +194,7 @@ npm run build              # tsup (ESM + DTS)
 
 ## Part of Lucid Skills
 
-This package is part of the [lucid-skills](https://github.com/raijinlabs/lucid-skills) monorepo.
+This package is part of the [lucid-plugins](https://github.com/lucid-fdn/lucid-plugins) monorepo.
 
 ## License
 

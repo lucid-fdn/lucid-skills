@@ -8,11 +8,11 @@
 
 **Tech Stack:** TypeScript 5.8, Vitest, tsup, MCP SDK, Zod, Bottleneck (rate limiting)
 
-**Working directory:** `C:\lucid-skills\skills\lucid-predict`
+**Working directory:** `C:\lucid-plugins\skills\lucid-predict`
 
-**Reference implementation:** `C:\lucid-skills\skills\lucid-trade` (mirror all patterns)
+**Reference implementation:** `C:\lucid-plugins\skills\lucid-trade` (mirror all patterns)
 
-**Design doc:** `C:\lucid-skills\docs\plans\2026-02-26-lucid-predict-brain-design.md`
+**Design doc:** `C:\lucid-plugins\docs\plans\2026-02-26-lucid-predict-brain-design.md`
 
 ---
 
@@ -373,7 +373,7 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
 
 **Step 10: Install dependencies and verify**
 
-Run: `cd /c/lucid-skills/skills/lucid-predict && npm install`
+Run: `cd /c/lucid-plugins/skills/lucid-predict && npm install`
 Run: `npx tsc --noEmit`
 Expected: Clean compile (no errors)
 
@@ -729,7 +729,7 @@ export { convertOdds, impliedProbability } from './odds.js';
 
 **Step: Run tests**
 
-Run: `cd /c/lucid-skills/skills/lucid-predict && npx vitest run`
+Run: `cd /c/lucid-plugins/skills/lucid-predict && npx vitest run`
 Expected: All tests pass
 
 **Step: Type check**
