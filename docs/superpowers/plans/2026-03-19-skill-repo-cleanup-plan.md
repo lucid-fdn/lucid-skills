@@ -25,7 +25,7 @@ plugins/
     test/
 
 packages/
-  embedded/                 # @lucid-fdn/skills-embedded
+  embedded/                 # @lucid-fdn/plugins-embedded
   web3-operator/
   web3-types/
   agent-tools-core/

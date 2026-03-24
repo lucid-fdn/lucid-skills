@@ -1,4 +1,4 @@
-name: Publish @lucid-fdn/skills-embedded
+name: Publish @lucid-fdn/plugins-embedded
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
         working-directory: packages/embedded
         run: |
           LOCAL=$(node -e "import('./package.json',{with:{type:'json'}}).then(m=>console.log(m.default.version))")
-          REMOTE=$(npm view @lucid-fdn/skills-embedded version 2>/dev/null || echo "0.0.0")
+          REMOTE=$(npm view @lucid-fdn/plugins-embedded version 2>/dev/null || echo "0.0.0")
           echo "local=$LOCAL" >> $GITHUB_OUTPUT
           echo "remote=$REMOTE" >> $GITHUB_OUTPUT
           if [ "$LOCAL" = "$REMOTE" ]; then
@@ -72,5 +72,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add packages/embedded/package.json packages/embedded/src/index.ts
-          git commit -m "chore: bump @lucid-fdn/skills-embedded to ${{ steps.check.outputs.bumped }} [skip ci]"
+          git commit -m "chore: bump @lucid-fdn/plugins-embedded to ${{ steps.check.outputs.bumped }} [skip ci]"
           git push

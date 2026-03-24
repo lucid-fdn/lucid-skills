@@ -6,7 +6,7 @@
  *
  * @example
  * ```ts
- * import { EmbeddedRegistry, createTradeServer } from '@lucid-fdn/skills-embedded'
+ * import { EmbeddedRegistry, createTradeServer } from '@lucid-fdn/plugins-embedded'
  *
  * const registry = new EmbeddedRegistry()
  * registry.register(createTradeServer(), 'trade')

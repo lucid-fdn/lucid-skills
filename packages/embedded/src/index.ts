@@ -6,7 +6,7 @@
  * that can be connected to any MCP transport.
  *
  * Usage:
- *   import { createTradeServer } from '@lucid-fdn/skills-embedded'
+ *   import { createTradeServer } from '@lucid-fdn/plugins-embedded'
  *   const server = createTradeServer()
  *   // Connect via InMemoryTransport for in-process execution
  */
