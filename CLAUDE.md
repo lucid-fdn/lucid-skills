@@ -39,7 +39,7 @@ scripts/
 
 A plugin can reference its matching skill, but it does not own it.
 
-## Features (22 total)
+## Features (21 total)
 
 ### Data Intelligence (blockchain data providers)
 - **lucid-moralis** — Lucid EVM Intelligence: 141 EVM tools (token security, OHLCV, whale tracking, wallet profiling, liquidity, DeFi). Wraps `@moralisweb3/api-mcp-server`. Env: `MORALIS_API_KEY`
@@ -49,7 +49,6 @@ A plugin can reference its matching skill, but it does not own it.
 - **lucid-trade** — crypto trading intelligence (5 tools: think, scan, watch, review, pro)
 - **lucid-audit** — smart contract security
 - **lucid-tax** — crypto tax compliance
-- **lucid-predict** — prediction markets
 - **lucid-observability** — production monitoring
 - **lucid-quantum** — quantum key search
 

@@ -19,7 +19,6 @@
   },
   "devDependencies": {
     "@lucid-fdn/trade": "*",
-    "@lucid-fdn/predict": "*",
     "@lucid-fdn/quantum": "*",
     "@lucid-fdn/seo": "*",
     "@lucid-fdn/audit": "*",
